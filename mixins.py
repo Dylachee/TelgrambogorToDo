@@ -16,7 +16,7 @@ class MyData(Model):
         self.res = res
 
 class Getallmixin:                                
-    def get_all_todo(self, url):
+    def get_all(self, url):
         response = requests.get(url + 'todo/all')
         if response.status_code == 200:
             return json.loads(response.text)
@@ -24,7 +24,7 @@ class Getallmixin:
 
 
 class Updatemixin:                                 
-    def update_todo(self, url, id_, name, status=False):
+    def update(self, url, id_, name, status=False):
         updated = MyData(title=name, is_done=status)
         response = requests.put(url + f'todo/{id_}/update',
                                 data=json.dumps(updated.res))
@@ -35,16 +35,8 @@ class Updatemixin:
         else:
             return 'You wrote wrong id!\nYou can try again'
         
-class Getonemixin:                                 
-    def retrieve_todo(self, url, id_: int):
-        response = requests.get(url + f'todo/{id_}')
-        if response.status_code == 200:
-            return json.loads(response.text)
-        elif response.status_code == 404:
-            return 'No Todo with this name!'
-        
 class Createmixin:
-    def create_todo(self, url, title, status=False):                   
+    def create(self, url, title, status=False):                   
         created = MyData(title=title, is_done=status)
         response = requests.post(url + 'todo/create', data=json.dumps(created.res))
        
@@ -55,7 +47,7 @@ class Createmixin:
         return 0
     
 class Deletemixin:                              
-    def delete_todo(self, url, id_):
+    def delete(self, url, id_):
         response = requests.delete(url + f'todo/{id_}/delete')
         if response.status_code == 200:
             return 'Deleted'
