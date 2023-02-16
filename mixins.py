@@ -26,8 +26,7 @@ class Getallmixin:
 class Updatemixin:                                 
     def update(self, url, id_, name, status=False):
         updated = MyData(title=name, is_done=status)
-        response = requests.put(url + f'todo/{id_}/update',
-                                data=json.dumps(updated.res))
+        response = requests.put(url + f'todo/{id_}/update',data=json.dumps(updated.res))
         if response.status_code == 200:
             return 'Updated:)'
         elif response.status_code == 404:

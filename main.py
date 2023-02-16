@@ -51,9 +51,9 @@ def create_title(message):
             bot.send_message(message.chat.id, 'Error!')
             menu(message)
     elif len(response.split()) > 1:
-        input_from_customer = response.split()
+        user_input = response.split()
 
-        result = interface.create(HOST, input_from_customer[0], input_from_customer[1])
+        result = interface.create(HOST, user_input[0], user_input[1])
         if result == '1':
             bot.send_message(message.chat.id, 'Created! :)')
             menu(message)
