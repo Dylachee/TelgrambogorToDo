@@ -11,6 +11,7 @@ token = '6134936077:AAFU73VCKd8DYS4pv-8kmtLtT1vk2AK5K-A'
 bot = telebot.TeleBot(token)
 HOST = 'http://3.67.196.232/'
 
+# Инициализация клавиатуры 
 
 inline_keyboard = types.InlineKeyboardMarkup()
 inline_button1 = types.InlineKeyboardButton('View all ToDo', callback_data='read_all')
@@ -19,22 +20,24 @@ inline_button3 = types.InlineKeyboardButton('Update', callback_data='update')
 inline_button4 = types.InlineKeyboardButton('Delete', callback_data='delete')
 inline_keyboard.add(inline_button1, inline_button2, inline_button3, inline_button4)
 
+# Стартовое меню
 @bot.message_handler(commands=['start'])
 def start(message: types.Message):
     bot.send_message(message.chat.id, f'Hello!, {message.from_user.first_name}')
     bot.send_message(message.chat.id, 'Choose one from below: ', reply_markup=inline_keyboard)
 
+# Возвратное меню
 def menu(message: types.Message):
     bot.send_message(message.chat.id, 'Choose one from below: ', reply_markup=inline_keyboard)
 
-
+# Просмотр ToDO
 @bot.callback_query_handler(func=lambda callback: callback.data == 'read_all')
 def send_todo(callback: types.CallbackQuery):
     res = json.dumps(interface.get_all(HOST), indent=4, ensure_ascii=False)
     bot.send_message(callback.message.chat.id, res)
     menu(callback.message)
 
-
+# Создание 
 @bot.callback_query_handler(func=lambda callback: callback.data == 'create')
 def create_new(callback: types.CallbackQuery):
     messages = bot.send_message(callback.message.chat.id, 'Write your ToDo')
@@ -60,7 +63,7 @@ def create_title(message):
         elif result == '0':
             bot.send_message(message.chat.id, 'Error!')
             menu(message)
-
+# Обновление
 @bot.callback_query_handler(func=lambda callback: callback.data == 'update')
 def update(callback: types.CallbackQuery):
     message = bot.send_message(callback.message.chat.id, 'Type ID and Dont write if false')
@@ -76,7 +79,7 @@ def update_title(message):
         result = interface.update(HOST, response[0], response[1], response[2])
         bot.send_message(message.chat.id, result)
         menu(message)
-
+# Удаление
 @bot.callback_query_handler(func=lambda callback: callback.data == 'delete')
 def delete(callback: types.CallbackQuery):
     res = json.dumps(interface.get_all(HOST), indent=4, ensure_ascii=False)
